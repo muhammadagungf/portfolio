@@ -56,6 +56,8 @@ body,
   min-height: 100%;
 }
 html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
   background: var(--page);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
@@ -147,4 +149,20 @@ body {
   .hint {
     transition: none;
   }
+}
+
+
+/* Responsive motion and depth for the interactive hero. */
+.hero-3d { perspective: 1200px; transform-style: preserve-3d; }
+.hero-copy { transform: translateZ(28px); }
+.stage { transform-style: preserve-3d; will-change: transform; }
+section[id] { scroll-margin-top: 88px; }
+@media (max-width: 767px) {
+  html { scroll-padding-top: 76px; }
+  .hero-3d { min-height: max(680px, calc(100svh - 64px)); }
+  .hero-copy { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .stage { transition: none !important; }
 }
