@@ -50,14 +50,21 @@ export default function App() {
   const [dark, toggle] = useTheme();
   const stageRef = useRef<HTMLDivElement>(null);
   const [mood, setMood] = useState<Mood>({face: 'base', patience: 100, pulls: 0});
+  const [tilt, setTilt] = useState({x: 0, y: 0});
+  const onHeroMove = (event: React.PointerEvent<HTMLElement>) => {
+    if (event.pointerType !== 'mouse' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    setTilt({x: ((event.clientY - rect.top) / rect.height - 0.5) * -7, y: ((event.clientX - rect.left) / rect.width - 0.5) * 9});
+  };
+  const resetTilt = () => setTilt({x: 0, y: 0});
   const onMood = useCallback((next: Mood) => setMood(next), []);
 
   return (
     <div className="min-h-screen overflow-hidden bg-page text-ink">
       <Header dark={dark} onToggle={toggle} />
 
-      <section id="beranda" className="relative isolate mx-auto flex min-h-[760px] max-w-[1600px] flex-col justify-center overflow-hidden px-6 py-20 md:min-h-[690px] md:px-10">
-        <div className="relative z-10 max-w-2xl pb-[330px] md:pb-0">
+      <section id="beranda" onPointerMove={onHeroMove} onPointerLeave={resetTilt} className="hero-3d relative isolate mx-auto flex min-h-[680px] max-w-[1600px] flex-col justify-center overflow-hidden px-5 py-14 sm:px-6 sm:py-16 md:min-h-[690px] md:px-10 md:py-20">
+        <div className="hero-copy relative z-10 max-w-2xl pb-[260px] sm:pb-[300px] md:pb-0">
           <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-field/80 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-mute">
             <span className="size-2 rounded-full bg-disc" /> Portfolio profesional
           </p>
@@ -73,7 +80,7 @@ export default function App() {
           <p className="mt-7 text-xs font-medium text-mute">⌖ {person.location}</p>
         </div>
 
-        <div ref={stageRef} className="stage absolute bottom-[-4%] right-[2%] z-0 aspect-square w-[min(88vw,440px)] md:bottom-[-8%] md:right-[5%] md:w-[min(46vw,620px)]" />
+        <div ref={stageRef} className="stage absolute bottom-[-2%] right-[2%] z-0 aspect-square w-[min(76vw,360px)] sm:w-[min(78vw,440px)] md:bottom-[-8%] md:right-[5%] md:w-[min(46vw,620px)]" style={{transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateZ(24px)`, transition: "transform 220ms ease-out"}} />
         <div className="pointer-events-none absolute bottom-5 left-6 z-10 text-[10px] font-semibold uppercase tracking-widest text-mute md:left-10">
           Coba tarik wajah Otis · {mood.pulls} interaksi
         </div>
