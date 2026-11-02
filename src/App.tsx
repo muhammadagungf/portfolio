@@ -124,7 +124,7 @@ export default function App() {
 
         <div ref={stageRef} className="stage absolute bottom-[-2%] right-[2%] z-0 aspect-square w-[min(76vw,360px)] sm:w-[min(78vw,440px)] md:bottom-[-8%] md:right-[5%] md:w-[min(46vw,620px)]" style={{transform: `perspective(1000px) rotateX(calc(${tilt.x}deg + var(--scroll-rotate-x, 0deg))) rotateY(calc(${tilt.y}deg + var(--scroll-rotate-y, 0deg))) translateZ(calc(24px + var(--scroll-depth, 0px)))`, transition: "transform 220ms ease-out"}} />
         <div className="pointer-events-none absolute bottom-5 left-6 z-10 text-[10px] font-semibold uppercase tracking-widest text-mute md:left-10">
-          Coba tarik wajah Otis · {mood.pulls} interaksi
+          Coba interaksikan avatar · {mood.pulls} interaksi
         </div>
         <FaceCanvas stageRef={stageRef} discColor={DISC} onMood={onMood} />
       </section>
