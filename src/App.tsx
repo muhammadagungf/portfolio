@@ -1,4 +1,4 @@
-import {useCallback, useRef, useState, type PointerEvent as ReactPointerEvent} from 'react';
+import {useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent} from 'react';
 import {bio, education, experiences, faces, nav, person, skills} from './content';
 import {FaceCanvas, type Mood} from './face/FaceCanvas';
 import {useTheme} from './hooks';
@@ -59,6 +59,48 @@ export default function App() {
   const resetTilt = () => setTilt({x: 0, y: 0});
   const onMood = useCallback((next: Mood) => setMood(next), []);
 
+  // Scroll-linked 3D motion + reveal animation for each portfolio section.
+  useEffect(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const revealItems = Array.from(document.querySelectorAll<HTMLElement>('.scroll-3d'));
+    if (reduceMotion) {
+      revealItems.forEach((item) => item.classList.add('is-visible'));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.14, rootMargin: '0px 0px -8% 0px'});
+    revealItems.forEach((item) => observer.observe(item));
+
+    let frame = 0;
+    const updateScroll3d = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        const stage = stageRef.current;
+        if (!stage) return;
+        const progress = Math.max(0, Math.min(1, window.scrollY / Math.max(1, window.innerHeight * 1.15)));
+        const scrollX = (progress - 0.5) * 18;
+        const scrollY = (0.5 - progress) * 22;
+        stage.style.setProperty('--scroll-rotate-x', `${scrollX}deg`);
+        stage.style.setProperty('--scroll-rotate-y', `${scrollY}deg`);
+        stage.style.setProperty('--scroll-depth', `${Math.sin(progress * Math.PI) * 34}px`);
+      });
+    };
+    window.addEventListener('scroll', updateScroll3d, {passive: true});
+    updateScroll3d();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', updateScroll3d);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen overflow-hidden bg-page text-ink">
       <Header dark={dark} onToggle={toggle} />
@@ -80,7 +122,7 @@ export default function App() {
           <p className="mt-7 text-xs font-medium text-mute">⌖ {person.location}</p>
         </div>
 
-        <div ref={stageRef} className="stage absolute bottom-[-2%] right-[2%] z-0 aspect-square w-[min(76vw,360px)] sm:w-[min(78vw,440px)] md:bottom-[-8%] md:right-[5%] md:w-[min(46vw,620px)]" style={{transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateZ(24px)`, transition: "transform 220ms ease-out"}} />
+        <div ref={stageRef} className="stage absolute bottom-[-2%] right-[2%] z-0 aspect-square w-[min(76vw,360px)] sm:w-[min(78vw,440px)] md:bottom-[-8%] md:right-[5%] md:w-[min(46vw,620px)]" style={{transform: `perspective(1000px) rotateX(calc(${tilt.x}deg + var(--scroll-rotate-x, 0deg))) rotateY(calc(${tilt.y}deg + var(--scroll-rotate-y, 0deg))) translateZ(calc(24px + var(--scroll-depth, 0px)))`, transition: "transform 220ms ease-out"}} />
         <div className="pointer-events-none absolute bottom-5 left-6 z-10 text-[10px] font-semibold uppercase tracking-widest text-mute md:left-10">
           Coba tarik wajah Otis · {mood.pulls} interaksi
         </div>
@@ -88,7 +130,7 @@ export default function App() {
       </section>
 
       <main className="relative z-10 border-t border-line bg-page">
-        <section id="profil" className="scroll-mt-24 mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-32">
+        <section id="profil" className="scroll-mt-24 scroll-3d mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-32">
           <SectionTitle eyebrow="01 / Tentang saya" title="Profil singkat" detail="Perkenalan dan informasi dasar untuk membantu rekruter mengenal saya." />
           <div className="grid gap-5 md:grid-cols-[1.2fr_0.8fr]">
             <div className="rounded-3xl bg-ink p-7 text-page md:p-10">
@@ -109,7 +151,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="pengalaman" className="scroll-mt-24 border-t border-line bg-field/40">
+        <section id="pengalaman" className="scroll-mt-24 scroll-3d border-t border-line bg-field/40">
           <div className="mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-28">
             <SectionTitle eyebrow="02 / Perjalanan karier" title="Pengalaman kerja" detail="Riwayat pekerjaan dan tanggung jawab profesional." />
             {experiences.length ? (
@@ -118,14 +160,14 @@ export default function App() {
           </div>
         </section>
 
-        <section id="pendidikan" className="scroll-mt-24 mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-28">
+        <section id="pendidikan" className="scroll-mt-24 scroll-3d mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-28">
           <SectionTitle eyebrow="03 / Latar belakang" title="Pendidikan" detail="Riwayat pendidikan formal maupun pelatihan yang relevan." />
           {education.length ? (
             <div className="grid gap-4 md:grid-cols-2">{education.map((item) => <article key={item.school + item.level} className="rounded-3xl border border-line p-7"><p className="text-xs font-bold text-disc">{item.period}</p><h3 className="mt-3 text-xl font-bold">{item.school}</h3><p className="mt-1 text-sm text-mute">{item.level}</p><p className="mt-4 text-sm leading-7 text-mute">{item.description}</p></article>)}</div>
           ) : <EmptyCard title="Data pendidikan belum ditambahkan" detail="Tambahkan nama sekolah atau kampus, jurusan, dan tahun pendidikan agar bagian ini siap ditinjau oleh rekruter." />}
         </section>
 
-        <section id="keahlian" className="scroll-mt-24 border-y border-line bg-field/40">
+        <section id="keahlian" className="scroll-mt-24 scroll-3d border-y border-line bg-field/40">
           <div className="mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-28">
             <SectionTitle eyebrow="04 / Kompetensi" title="Keahlian" detail="Kemampuan yang relevan dengan pekerjaan administrasi." />
             {skills.length ? <div className="flex flex-wrap gap-3">{skills.map((skill) => <span key={skill} className="rounded-full border border-line bg-page px-5 py-3 text-sm font-semibold">{skill}</span>)}</div> : <EmptyCard title="Daftar keahlian belum ditambahkan" detail="Kita bisa menambahkan kemampuan yang benar-benar kamu kuasai, misalnya aplikasi perkantoran, pengarsipan, pengolahan data, atau administrasi dokumen setelah kamu konfirmasi." />}
