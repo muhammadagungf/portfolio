@@ -136,7 +136,7 @@ export default function App() {
             <div className="rounded-3xl bg-ink p-7 text-page md:p-10">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-sun">Perkenalan</p>
               <h3 className="mt-5 max-w-xl font-display text-2xl font-bold leading-tight tracking-tight md:text-4xl">{person.name}</h3>
-              <p className="mt-5 max-w-xl text-sm leading-7 text-page/70">Saya berdomisili di {person.location} dan menargetkan kesempatan berkarier sebagai {person.role}. Portfolio ini menjadi tempat untuk menampilkan latar belakang, kemampuan, dan hasil pekerjaan secara terstruktur.</p>
+              <p className="mt-5 max-w-xl text-sm leading-7 text-page/70">{bio[1]}</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-1">
               <div className="rounded-3xl border border-line p-6">
@@ -153,7 +153,7 @@ export default function App() {
 
         <section id="pengalaman" className="scroll-mt-24 scroll-3d border-t border-line bg-field/40">
           <div className="mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-28">
-            <SectionTitle eyebrow="02 / Perjalanan karier" title="Pengalaman kerja" detail="Riwayat pekerjaan dan tanggung jawab profesional." />
+            <SectionTitle eyebrow="02 / Perjalanan karier" title="Pengalaman kerja" detail="Perjalanan karier dari bidang operasional hingga administrasi sales dan ekspedisi." />
             {experiences.length ? (
               <div className="grid gap-4 md:grid-cols-2">{experiences.map((item) => <article key={item.role + item.company} className="rounded-3xl border border-line p-7"><p className="text-xs font-bold text-disc">{item.period}</p><h3 className="mt-3 text-xl font-bold">{item.role}</h3><p className="mt-1 text-sm text-mute">{item.company}</p><p className="mt-4 text-sm leading-7 text-mute">{item.description}</p></article>)}</div>
             ) : <EmptyCard title="Detail pengalaman belum ditambahkan" detail="Bagian ini siap diisi dengan nama perusahaan, posisi, periode kerja, dan tanggung jawab setelah data pengalaman kerja diberikan." />}
@@ -161,7 +161,7 @@ export default function App() {
         </section>
 
         <section id="pendidikan" className="scroll-mt-24 scroll-3d mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-28">
-          <SectionTitle eyebrow="03 / Latar belakang" title="Pendidikan" detail="Riwayat pendidikan formal maupun pelatihan yang relevan." />
+          <SectionTitle eyebrow="03 / Latar belakang" title="Pendidikan" detail="Latar belakang pendidikan Teknik Informatika dan pendidikan kejuruan." />
           {education.length ? (
             <div className="grid gap-4 md:grid-cols-2">{education.map((item) => <article key={item.school + item.level} className="rounded-3xl border border-line p-7"><p className="text-xs font-bold text-disc">{item.period}</p><h3 className="mt-3 text-xl font-bold">{item.school}</h3><p className="mt-1 text-sm text-mute">{item.level}</p><p className="mt-4 text-sm leading-7 text-mute">{item.description}</p></article>)}</div>
           ) : <EmptyCard title="Data pendidikan belum ditambahkan" detail="Tambahkan nama sekolah atau kampus, jurusan, dan tahun pendidikan agar bagian ini siap ditinjau oleh rekruter." />}
@@ -169,7 +169,7 @@ export default function App() {
 
         <section id="keahlian" className="scroll-mt-24 scroll-3d border-y border-line bg-field/40">
           <div className="mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-28">
-            <SectionTitle eyebrow="04 / Kompetensi" title="Keahlian" detail="Kemampuan yang relevan dengan pekerjaan administrasi." />
+            <SectionTitle eyebrow="04 / Kompetensi" title="Keahlian" detail="Perangkat kerja digital, pengelolaan basis data, serta kemampuan pendukung profesional." />
             {skills.length ? <div className="flex flex-wrap gap-3">{skills.map((skill) => <span key={skill} className="rounded-full border border-line bg-page px-5 py-3 text-sm font-semibold">{skill}</span>)}</div> : <EmptyCard title="Daftar keahlian belum ditambahkan" detail="Kita bisa menambahkan kemampuan yang benar-benar kamu kuasai, misalnya aplikasi perkantoran, pengarsipan, pengolahan data, atau administrasi dokumen setelah kamu konfirmasi." />}
           </div>
         </section>
