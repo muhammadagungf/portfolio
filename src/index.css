@@ -166,3 +166,27 @@ section[id] { scroll-margin-top: 88px; }
   html { scroll-behavior: auto; }
   .stage { transition: none !important; }
 }
+
+
+/* Scroll-triggered 3D section entrance and scroll-linked Otis movement. */
+.scroll-3d {
+  opacity: 0;
+  transform: perspective(1100px) translate3d(0, 56px, -70px) rotateX(7deg);
+  transform-origin: 50% 20%;
+  transition: opacity 850ms ease, transform 950ms cubic-bezier(.2,.75,.2,1);
+  will-change: opacity, transform;
+}
+.scroll-3d.is-visible {
+  opacity: 1;
+  transform: perspective(1100px) translate3d(0, 0, 0) rotateX(0deg);
+}
+.stage {
+  transition: transform 180ms ease-out;
+}
+@media (max-width: 767px) {
+  .scroll-3d { transform: translate3d(0, 34px, 0); }
+  .scroll-3d.is-visible { transform: translate3d(0, 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-3d, .scroll-3d.is-visible { opacity: 1; transform: none; transition: none; }
+}
