@@ -1,165 +1,152 @@
-import {useCallback, useRef, useState, type FormEvent} from 'react';
-import {bio, faces, nav, person, press} from './content';
+import {useCallback, useRef, useState} from 'react';
+import {bio, education, experiences, faces, nav, person, skills} from './content';
 import {FaceCanvas, type Mood} from './face/FaceCanvas';
-import {useFitHeadline, useTheme} from './hooks';
+import {useTheme} from './hooks';
 
 const DISC = '#2f4bf0';
 
 function Header({dark, onToggle}: {dark: boolean; onToggle: () => void}) {
   return (
-    <header className="relative z-40 flex items-center justify-between gap-4 px-[clamp(16px,2.4vw,36px)] pt-[clamp(14px,2.4vh,24px)]">
-      <a href="#" className="flex items-center gap-2.5 font-display text-[15px] font-bold tracking-[-0.01em]">
-        <span className="relative size-8 overflow-hidden rounded-full bg-disc">
-          <img src={faces.base.src} alt="" className="absolute top-[-2%] left-[-30%] w-[160%] max-w-none" />
-        </span>
-        {person.handle}
-      </a>
-      <nav aria-label="Main" className="flex items-center gap-1.5">
-        {nav.map((l, i) => (
-          <a
-            key={l.href}
-            href={l.href}
-            className={`rounded-full px-3.5 py-2 text-ui font-semibold uppercase transition-colors ${
-              i === 0 ? 'bg-ink text-page' : 'hover:bg-line'
-            }`}
-          >
-            {l.label}
-          </a>
-        ))}
-        <button
-          type="button"
-          onClick={onToggle}
-          aria-pressed={dark}
-          aria-label="Dark mode"
-          className="ml-2 flex h-7 w-12 items-center rounded-full bg-sun p-1"
-        >
-          <span
-            className={`size-5 rounded-full bg-ink transition-transform duration-300 ${dark ? 'translate-x-5' : ''}`}
-          />
-        </button>
-      </nav>
+    <header className="sticky top-0 z-50 border-b border-line bg-page/90 px-5 py-4 backdrop-blur-xl md:px-10">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+        <a href="#beranda" className="font-display text-sm font-black tracking-tight">
+          AGUNG<span className="text-disc">.</span>
+        </a>
+        <nav aria-label="Navigasi utama" className="flex max-w-[78vw] items-center gap-1 overflow-x-auto">
+          {nav.map((item) => (
+            <a key={item.href} href={item.href} className="whitespace-nowrap rounded-full px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-mute transition hover:bg-line hover:text-ink md:px-4 md:text-xs">
+              {item.label}
+            </a>
+          ))}
+          <button type="button" onClick={onToggle} aria-label="Ganti tema" aria-pressed={dark} className="ml-1 flex h-8 w-12 shrink-0 items-center rounded-full bg-sun p-1">
+            <span className={`${dark ? 'translate-x-4' : ''} size-6 rounded-full bg-ink transition-transform`} />
+          </button>
+        </nav>
+      </div>
     </header>
   );
 }
 
-function Subscribe() {
-  const [done, setDone] = useState(false);
-  const submit = (e: FormEvent) => {
-    e.preventDefault();
-    setDone(true);
-  };
+function SectionTitle({eyebrow, title, detail}: {eyebrow: string; title: string; detail: string}) {
   return (
-    <form onSubmit={submit} className="w-full max-w-[380px]">
-      <label htmlFor="email" className="mb-2.5 block text-micro font-medium uppercase text-mute">
-        Every other Sunday · one email
-      </label>
-      {done ? (
-        <p className="flex h-11 items-center rounded-full bg-ink px-5 text-[14px] font-medium text-page">
-          You’re in. He’s pulling a face about it.
-        </p>
-      ) : (
-        <div className="flex h-11 gap-1.5">
-          <input
-            id="email"
-            type="email"
-            required
-            placeholder="you@email.com"
-            className="min-w-0 flex-1 rounded-full border border-line bg-field px-5 text-[14px] outline-none placeholder:text-mute focus:border-ink"
-          />
-          <button
-            type="submit"
-            className="rounded-full bg-disc px-5 text-ui font-semibold uppercase text-white transition-transform active:scale-95"
-          >
-            Subscribe →
-          </button>
-        </div>
-      )}
-    </form>
+    <div className="mb-8 max-w-2xl">
+      <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-disc">{eyebrow}</p>
+      <h2 className="font-display text-3xl font-black tracking-[-0.045em] md:text-5xl">{title}</h2>
+      <p className="mt-3 max-w-xl text-sm leading-7 text-mute">{detail}</p>
+    </div>
   );
 }
 
-function MoodMeter({mood}: {mood: Mood}) {
-  const p = mood.patience;
+function EmptyCard({title, detail}: {title: string; detail: string}) {
   return (
-    <div className="w-full max-w-[380px] space-y-3" aria-live="polite">
-      <div className="flex items-baseline justify-between text-micro uppercase">
-        <span className="text-mute">Current mood</span>
-        <span className="font-display text-[15px] font-bold tracking-[-0.01em] normal-case">{faces[mood.face].mood}</span>
-      </div>
-      <div>
-        <div className="mb-1.5 flex justify-between text-micro uppercase text-mute">
-          <span>Patience</span>
-          <span className="tabular-nums">{p}%</span>
-        </div>
-        <div className="h-1.5 overflow-hidden rounded-full bg-line">
-          <div
-            className="h-full rounded-full transition-[width] duration-150"
-            style={{width: `${p}%`, background: `color-mix(in oklab, var(--disc) ${p}%, #e8412c)`}}
-          />
-        </div>
-      </div>
+    <div className="rounded-3xl border border-dashed border-line bg-field/60 p-6 md:p-8">
+      <p className="font-display text-lg font-bold">{title}</p>
+      <p className="mt-2 text-sm leading-6 text-mute">{detail}</p>
     </div>
   );
 }
 
 export default function App() {
   const [dark, toggle] = useTheme();
-  const title = useFitHeadline<HTMLHeadingElement>();
   const stageRef = useRef<HTMLDivElement>(null);
   const [mood, setMood] = useState<Mood>({face: 'base', patience: 100, pulls: 0});
-  const onMood = useCallback((m: Mood) => setMood(m), []);
+  const onMood = useCallback((next: Mood) => setMood(next), []);
 
   return (
-    <div className="flex min-h-[100svh] flex-col bg-page text-ink">
+    <div className="min-h-screen overflow-hidden bg-page text-ink">
       <Header dark={dark} onToggle={toggle} />
 
-      <main className="relative isolate flex flex-1 flex-col px-[clamp(16px,2.4vw,36px)] pt-[clamp(20px,5vh,56px)] text-center">
-        <h1 ref={title} className="headline relative z-0 inline-block text-[21vw] md:whitespace-nowrap">
-          <span className="block md:inline">Hey, I’m </span>
-          <span className="marker">{person.name}</span>
-        </h1>
-
-        <div className="relative grid flex-1 grid-cols-1 items-end gap-x-8 gap-y-8 text-left md:grid-cols-[1fr_auto_1fr]">
-          <div ref={stageRef} className="stage relative mx-auto aspect-square w-[min(100vw,580px)] md:order-2 md:w-[min(46vw,78svh)]">
-            <p
-              className={`hint absolute top-[24%] right-[-2%] rotate-6 font-serif text-[clamp(17px,1.5vw,22px)] italic md:right-[-8%] ${
-                mood.pulls ? 'translate-y-2 opacity-0' : ''
-              }`}
-            >
-              pull my face
-              <svg viewBox="0 0 60 40" className="ml-6 block h-8 w-12 -scale-x-100" fill="none" aria-hidden>
-                <path d="M4 4c18 2 34 12 44 30" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                <path d="M40 31l8 4 1-9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </p>
+      <section id="beranda" className="relative isolate mx-auto flex min-h-[760px] max-w-[1600px] flex-col justify-center overflow-hidden px-6 py-20 md:min-h-[690px] md:px-10">
+        <div className="relative z-10 max-w-2xl pb-[330px] md:pb-0">
+          <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-field/80 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-mute">
+            <span className="size-2 rounded-full bg-disc" /> Portfolio profesional
+          </p>
+          <h1 className="font-display text-[clamp(42px,7.2vw,100px)] font-black leading-[0.94] tracking-[-0.065em]">
+            Halo, saya<br /><span className="marker">{person.shortName}.</span>
+          </h1>
+          <p className="mt-7 max-w-lg text-xl font-semibold tracking-tight md:text-2xl">{person.role}</p>
+          <p className="mt-3 max-w-lg text-sm leading-7 text-mute md:text-base">{bio[1]}</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="#kontak" className="rounded-full bg-disc px-6 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:scale-[1.03]">Hubungi saya ↗</a>
+            <a href="#profil" className="rounded-full border border-line px-6 py-3 text-xs font-bold uppercase tracking-wider transition hover:bg-line">Lihat profil</a>
           </div>
-
-          <div className="relative z-10 max-w-[380px] space-y-3 pb-[clamp(20px,5vh,48px)] text-lede md:order-1">
-            {bio.map((b, i) => (
-              <p key={i} className={i === 0 ? 'font-display text-[1.25em] font-bold tracking-[-0.015em]' : 'text-mute'}>
-                {b}
-              </p>
-            ))}
-          </div>
-
-          <div className="relative z-10 flex flex-col gap-7 pb-[clamp(20px,5vh,48px)] md:order-3 md:items-end">
-            <MoodMeter mood={mood} />
-            <Subscribe />
-          </div>
+          <p className="mt-7 text-xs font-medium text-mute">⌖ {person.location}</p>
         </div>
 
+        <div ref={stageRef} className="stage absolute bottom-[-4%] right-[2%] z-0 aspect-square w-[min(88vw,440px)] md:bottom-[-8%] md:right-[5%] md:w-[min(46vw,620px)]" />
+        <div className="pointer-events-none absolute bottom-5 left-6 z-10 text-[10px] font-semibold uppercase tracking-widest text-mute md:left-10">
+          Coba tarik wajah Otis · {mood.pulls} interaksi
+        </div>
         <FaceCanvas stageRef={stageRef} discColor={DISC} onMood={onMood} />
+      </section>
+
+      <main className="relative z-10 border-t border-line bg-page">
+        <section id="profil" className="scroll-mt-24 mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-32">
+          <SectionTitle eyebrow="01 / Tentang saya" title="Profil singkat" detail="Perkenalan dan informasi dasar untuk membantu rekruter mengenal saya." />
+          <div className="grid gap-5 md:grid-cols-[1.2fr_0.8fr]">
+            <div className="rounded-3xl bg-ink p-7 text-page md:p-10">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-sun">Perkenalan</p>
+              <h3 className="mt-5 max-w-xl font-display text-2xl font-bold leading-tight tracking-tight md:text-4xl">{person.name}</h3>
+              <p className="mt-5 max-w-xl text-sm leading-7 text-page/70">Saya berdomisili di {person.location} dan menargetkan kesempatan berkarier sebagai {person.role}. Portfolio ini menjadi tempat untuk menampilkan latar belakang, kemampuan, dan hasil pekerjaan secara terstruktur.</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-1">
+              <div className="rounded-3xl border border-line p-6">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-mute">Domisili</p>
+                <p className="mt-3 text-lg font-bold">{person.location}</p>
+              </div>
+              <div className="rounded-3xl border border-line p-6">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-mute">Posisi yang dituju</p>
+                <p className="mt-3 text-lg font-bold">{person.role}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="pengalaman" className="scroll-mt-24 border-t border-line bg-field/40">
+          <div className="mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-28">
+            <SectionTitle eyebrow="02 / Perjalanan karier" title="Pengalaman kerja" detail="Riwayat pekerjaan dan tanggung jawab profesional." />
+            {experiences.length ? (
+              <div className="grid gap-4 md:grid-cols-2">{experiences.map((item) => <article key={item.role + item.company} className="rounded-3xl border border-line p-7"><p className="text-xs font-bold text-disc">{item.period}</p><h3 className="mt-3 text-xl font-bold">{item.role}</h3><p className="mt-1 text-sm text-mute">{item.company}</p><p className="mt-4 text-sm leading-7 text-mute">{item.description}</p></article>)}</div>
+            ) : <EmptyCard title="Detail pengalaman belum ditambahkan" detail="Bagian ini siap diisi dengan nama perusahaan, posisi, periode kerja, dan tanggung jawab setelah data pengalaman kerja diberikan." />}
+          </div>
+        </section>
+
+        <section id="pendidikan" className="scroll-mt-24 mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-28">
+          <SectionTitle eyebrow="03 / Latar belakang" title="Pendidikan" detail="Riwayat pendidikan formal maupun pelatihan yang relevan." />
+          {education.length ? (
+            <div className="grid gap-4 md:grid-cols-2">{education.map((item) => <article key={item.school + item.level} className="rounded-3xl border border-line p-7"><p className="text-xs font-bold text-disc">{item.period}</p><h3 className="mt-3 text-xl font-bold">{item.school}</h3><p className="mt-1 text-sm text-mute">{item.level}</p><p className="mt-4 text-sm leading-7 text-mute">{item.description}</p></article>)}</div>
+          ) : <EmptyCard title="Data pendidikan belum ditambahkan" detail="Tambahkan nama sekolah atau kampus, jurusan, dan tahun pendidikan agar bagian ini siap ditinjau oleh rekruter." />}
+        </section>
+
+        <section id="keahlian" className="scroll-mt-24 border-y border-line bg-field/40">
+          <div className="mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-28">
+            <SectionTitle eyebrow="04 / Kompetensi" title="Keahlian" detail="Kemampuan yang relevan dengan pekerjaan administrasi." />
+            {skills.length ? <div className="flex flex-wrap gap-3">{skills.map((skill) => <span key={skill} className="rounded-full border border-line bg-page px-5 py-3 text-sm font-semibold">{skill}</span>)}</div> : <EmptyCard title="Daftar keahlian belum ditambahkan" detail="Kita bisa menambahkan kemampuan yang benar-benar kamu kuasai, misalnya aplikasi perkantoran, pengarsipan, pengolahan data, atau administrasi dokumen setelah kamu konfirmasi." />}
+          </div>
+        </section>
+
+        <section id="kontak" className="scroll-mt-24 mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-32">
+          <div className="rounded-[2rem] bg-disc p-8 text-white md:p-14">
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/70">05 / Kontak</p>
+            <h2 className="mt-4 max-w-2xl font-display text-4xl font-black leading-tight tracking-[-0.05em] md:text-6xl">Mari terhubung.</h2>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-white/75">Untuk informasi lebih lanjut atau kesempatan kerja, silakan hubungi saya melalui WhatsApp atau email.</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href={`https://wa.me/${person.phone}`} target="_blank" rel="noreferrer" className="rounded-full bg-white px-6 py-3 text-xs font-bold uppercase tracking-wider text-disc transition hover:scale-[1.03]">WhatsApp ↗</a>
+              <a href={`mailto:${person.email}`} className="rounded-full border border-white/40 px-6 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-white/10">Kirim email ↗</a>
+            </div>
+            <div className="mt-12 grid gap-5 border-t border-white/20 pt-7 text-sm sm:grid-cols-2">
+              <div><p className="text-[10px] font-bold uppercase tracking-widest text-white/60">WhatsApp</p><p className="mt-2 font-semibold">+{person.phone}</p></div>
+              <div><p className="text-[10px] font-bold uppercase tracking-widest text-white/60">Email</p><p className="mt-2 break-all font-semibold">{person.email}</p></div>
+            </div>
+          </div>
+        </section>
       </main>
 
-      <footer className="relative z-10 border-t border-line px-[clamp(16px,2.4vw,36px)] py-5">
-        <ul className="flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-mute">
-          <li className="text-micro font-medium uppercase">As seen in</li>
-          {press.map((p) => (
-            <li key={p.name} className={`text-wordmark ${p.font}`}>
-              {p.name}
-            </li>
-          ))}
-        </ul>
+      <footer className="border-t border-line px-6 py-7 md:px-10">
+        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-2 text-xs text-mute sm:flex-row">
+          <p className="font-semibold text-ink">{person.name}</p>
+          <p>Portfolio pribadi · {new Date().getFullYear()}</p>
+        </div>
       </footer>
     </div>
   );
