@@ -18,13 +18,59 @@ export const nav = [
 ];
 
 export const bio = [
-  'Kandidat Staff Administrasi',
-  'Saya Muhammad Agung Firdaus, berdomisili di Driyorejo, Gresik. Website ini merupakan profil profesional untuk memperkenalkan diri dan memudahkan rekruter menghubungi saya.',
+  'Staff Administrasi · Admin Sales & Ekspedisi',
+  'Saya memiliki pengalaman di bidang administrasi sales dan ekspedisi di PT Wings Surya sejak Desember 2019, didukung pengalaman sebelumnya di bidang operasional produksi dan packing. Lulusan S1 Teknik Informatika yang terbiasa bekerja secara individu maupun tim, disiplin, mampu beradaptasi, dan siap terus belajar serta berkembang.',
 ];
 
-export const experiences: {role: string; company: string; period: string; description: string}[] = [];
-export const education: {school: string; level: string; period: string; description: string}[] = [];
-export const skills: string[] = [];
+export const experiences: {role: string; company: string; period: string; description: string}[] = [
+  {
+    role: 'Admin Sales Division & Ekspedisi',
+    company: 'PT Wings Surya',
+    period: 'Desember 2019 – Sekarang',
+    description: 'Berpengalaman bekerja pada bidang administrasi sales dan ekspedisi.',
+  },
+  {
+    role: 'Operator Flexo',
+    company: 'PT Pabrik Kertas Tjiwi Kimia',
+    period: 'November 2012 – November 2016',
+    description: 'Pengalaman kerja di bidang operasional mesin flexo pada industri kertas.',
+  },
+  {
+    role: 'Packing',
+    company: 'PT Karunia Alam Segar',
+    period: 'Mei 2012 – Agustus 2012',
+    description: 'Pengalaman kerja pada bagian packing.',
+  },
+];
+
+export const education: {school: string; level: string; period: string; description: string}[] = [
+  {
+    school: 'Universitas Islam Majapahit',
+    level: 'Sarjana Teknik Informatika',
+    period: 'Selesai 2018',
+    description: 'Pendidikan tinggi di bidang Teknik Informatika.',
+  },
+  {
+    school: 'SMKN 1 Jetis Mojokerto',
+    level: 'Teknik Perbaikan Body Otomotif',
+    period: 'Selesai 2012',
+    description: 'Pendidikan kejuruan di bidang perbaikan body otomotif.',
+  },
+];
+
+export const skills: string[] = [
+  'Microsoft Access',
+  'Microsoft Word',
+  'Microsoft Excel',
+  'Internet Applications',
+  'WordPress',
+  'Web Design',
+  'Blogging',
+  'Database Design',
+  'Manajemen Waktu',
+  'Bersosialisasi',
+  'Bahasa Inggris',
+];
 
 /**
  * Every expression is registered to the same 2:3 bust framing, padded to a
