@@ -1,4 +1,4 @@
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useRef, useState, type PointerEvent as ReactPointerEvent} from 'react';
 import {bio, education, experiences, faces, nav, person, skills} from './content';
 import {FaceCanvas, type Mood} from './face/FaceCanvas';
 import {useTheme} from './hooks';
@@ -51,7 +51,7 @@ export default function App() {
   const stageRef = useRef<HTMLDivElement>(null);
   const [mood, setMood] = useState<Mood>({face: 'base', patience: 100, pulls: 0});
   const [tilt, setTilt] = useState({x: 0, y: 0});
-  const onHeroMove = (event: React.PointerEvent<HTMLElement>) => {
+  const onHeroMove = (event: ReactPointerEvent<HTMLElement>) => {
     if (event.pointerType !== 'mouse' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const rect = event.currentTarget.getBoundingClientRect();
     setTilt({x: ((event.clientY - rect.top) / rect.height - 0.5) * -7, y: ((event.clientX - rect.left) / rect.width - 0.5) * 9});
